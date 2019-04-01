@@ -1,9 +1,8 @@
 package com.github.ryneal.postcodegeolocation.config;
 
-import com.github.ryneal.postcodegeolocation.batch.task.CsvReader;
-import com.github.ryneal.postcodegeolocation.batch.task.PostcodeProcessor;
+import com.github.ryneal.postcodegeolocation.batch.task.*;
 import com.github.ryneal.postcodegeolocation.model.Postcode;
-import com.github.ryneal.postcodegeolocation.service.PostcodeService;
+import com.github.ryneal.postcodegeolocation.model.PostcodeDistrict;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.configuration.annotation.EnableBatchProcessing;
@@ -27,8 +26,14 @@ public class BatchConfig {
     @Value("${task.postcode.file}")
     private String postcodeFile;
 
-    @Value("${task.postcode.batchSize:100}")
+    @Value("${task.postcode.batch-size:100}")
     private Integer postcodeBatchSize;
+
+    @Value("${task.postcode-district.file}")
+    private String postcodeDistrictFile;
+
+    @Value("${task.postcode-district.batch-size:100}")
+    private Integer postcodeDistrictBatchSize;
 
     public BatchConfig(JobBuilderFactory jobBuilderFactory,
                        StepBuilderFactory stepBuilderFactory) {
@@ -45,13 +50,13 @@ public class BatchConfig {
     @Bean
     public Step postcodeCsvStep(CsvReader postcodeCsvReader,
                                 PostcodeProcessor postcodeProcessor,
-                                PostcodeService postcodeService) {
+                                PostcodeWriter postcodeWriter) {
         return this.stepBuilderFactory
                 .get("postcodeCsvStep")
                 .<Map<String, String>, Postcode>chunk(this.postcodeBatchSize)
                 .reader(postcodeCsvReader)
                 .processor(postcodeProcessor)
-                .writer(postcodeService)
+                .writer(postcodeWriter)
                 .build();
     }
 
@@ -63,4 +68,33 @@ public class BatchConfig {
                 .preventRestart()
                 .build();
     }
+
+    @Bean
+    @StepScope
+    public CsvReader postcodeDistrictCsvReader() {
+        return new CsvReader(new File(this.postcodeDistrictFile), true);
+    }
+
+    @Bean
+    public Step postcodeDistrictCsvStep(CsvReader postcodeDistrictCsvReader,
+                                        PostcodeDistrictProcessor postcodeDistrictProcessor,
+                                        PostcodeDistrictWriter postcodeDistrictWriter) {
+        return this.stepBuilderFactory
+                .get("postcodeCsvStep")
+                .<Map<String, String>, PostcodeDistrict>chunk(this.postcodeDistrictBatchSize)
+                .reader(postcodeDistrictCsvReader)
+                .processor(postcodeDistrictProcessor)
+                .writer(postcodeDistrictWriter)
+                .build();
+    }
+
+    @Bean
+    public Job postcodeDistrictJob(Step postcodeDistrictCsvStep) {
+        return this.jobBuilderFactory
+                .get("postcodeDistrictJob")
+                .start(postcodeDistrictCsvStep)
+                .preventRestart()
+                .build();
+    }
+
 }

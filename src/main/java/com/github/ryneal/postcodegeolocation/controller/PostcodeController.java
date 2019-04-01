@@ -15,10 +15,10 @@ import javax.validation.constraints.Pattern;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.github.ryneal.postcodegeolocation.util.PostcodeConstants.POSTCODE_REGEX;
+
 @RestController
 public class PostcodeController {
-
-    private static final String POSTCODE_REGEX = "^([G][I][R] 0[A]{2})|((([A-Z][0-9]{1,2})|(([A-Z][A-HJ-Y][0-9]{1,2})|(([AZ][0-9][A-Z])|([A-Z][A-HJ-Y][0-9]?[A-Z]))))[0-9][A-Z]{2})$";
 
     private PostcodeService postcodeService;
 
@@ -27,7 +27,8 @@ public class PostcodeController {
     }
 
     @GetMapping("/v1/postcodes/{postcode}")
-    public ResponseEntity<Postcode> getPostcode(@PathVariable @Pattern(regexp = POSTCODE_REGEX, message = "Invalid Postcode") String postcode) {
+    public ResponseEntity<Postcode> getPostcode(@PathVariable @Pattern(regexp = POSTCODE_REGEX,
+            message = "Invalid Postcode") String postcode) {
         return ResponseEntity.of(this.postcodeService.readPostcode(postcode));
     }
 

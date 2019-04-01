@@ -13,56 +13,28 @@ import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
 import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.List;
+
 @EqualsAndHashCode(callSuper = true)
 @Document
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class Postcode extends Auditable implements GeoSpatial {
+public class PostcodeDistrict extends Auditable implements GeoSpatial {
 
     @Id
     private String postcode;
-    private Boolean inUse;
     private Long easting;
     private Long northing;
-    private String gridRef;
-    private String county;
-    private String district;
-    private String ward;
-    private String districtCode;
-    private String wardCode;
-    private String country;
-    private String countryCode;
-    private String constituency;
-    private String introduced;
-    private String terminated;
-    private String parish;
-    private String nationalPark;
+    private String gridReference;
+    private String townArea;
+    private String region;
+    private Long postcodes;
+    private Long activePostcodes;
     private Long population;
     private Long households;
-    private String builtUpArea;
-    private String buildUpSubDivision;
-    private String lowerLayerOutputArea;
-    private String ruralUrban;
-    private String region;
-    private Double altitude;
-    private String londonZone;
-    private String lsoaCode;
-    private String localAuthority;
-    private String msoaCode;
-    private String middleLayerOutputArea;
-    private String parishCode;
-    private String censusOutputArea;
-    private String constituencyCode;
-    private Long multipleDeprivationIndex;
-    private Long quality;
-    private Long userType;
-    private String lastUpdated;
-    private String nearestStation;
-    private Double distanceToStation;
-    private String postcodeArea;
-    private String postcodeDistrict;
-    private String policeForce;
+    private List<String> nearbyDistricts;
+
     @JsonIgnore
     @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
     private GeoJsonPoint location;

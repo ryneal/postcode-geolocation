@@ -34,8 +34,4 @@ public class PostcodeServiceImpl implements PostcodeService {
         return this.postcodeRepository.save(postcode);
     }
 
-    @Override
-    public void write(List<? extends Postcode> list) {
-        this.postcodeRepository.saveAll(list);
-    }
 }
