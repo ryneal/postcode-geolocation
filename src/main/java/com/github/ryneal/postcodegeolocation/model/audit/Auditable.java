@@ -7,7 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.util.Date;
 
 @Data
-public class Auditable {
+public abstract class Auditable {
 
     @CreatedDate
     private Date createdDate;
