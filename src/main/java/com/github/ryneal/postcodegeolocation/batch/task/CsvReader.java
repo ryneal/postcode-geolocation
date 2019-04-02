@@ -24,11 +24,6 @@ public class CsvReader implements ItemReader<Map<String, String>>, StepListener 
         this.hasHeader = hasHeader;
     }
 
-    protected CsvReader(LineIterator lineIterator, boolean hasHeader) {
-        this.lineIterator = lineIterator;
-        this.hasHeader = hasHeader;
-    }
-
     @Override
     @BeforeStep
     public void beforeStep() throws Exception {
