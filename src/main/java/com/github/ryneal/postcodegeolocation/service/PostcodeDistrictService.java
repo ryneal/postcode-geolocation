@@ -1,6 +1,5 @@
 package com.github.ryneal.postcodegeolocation.service;
 
-import com.github.ryneal.postcodegeolocation.model.Postcode;
 import com.github.ryneal.postcodegeolocation.model.PostcodeDistrict;
 
 import java.util.List;
@@ -11,5 +10,5 @@ public interface PostcodeDistrictService {
 
     List<PostcodeDistrict> readPostcodeDistrictsInArea(Double latitude, Double longitude, Double distance);
 
-    Postcode savePostcodeDistrict(PostcodeDistrict postcodeDistrict);
+    PostcodeDistrict savePostcodeDistrict(PostcodeDistrict postcodeDistrict);
 }

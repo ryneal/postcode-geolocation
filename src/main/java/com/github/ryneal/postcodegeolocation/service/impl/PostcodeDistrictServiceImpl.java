@@ -1,6 +1,5 @@
 package com.github.ryneal.postcodegeolocation.service.impl;
 
-import com.github.ryneal.postcodegeolocation.model.Postcode;
 import com.github.ryneal.postcodegeolocation.model.PostcodeDistrict;
 import com.github.ryneal.postcodegeolocation.repository.PostcodeDistrictRepository;
 import com.github.ryneal.postcodegeolocation.service.PostcodeDistrictService;
@@ -31,7 +30,7 @@ public class PostcodeDistrictServiceImpl implements PostcodeDistrictService {
     }
 
     @Override
-    public Postcode savePostcodeDistrict(PostcodeDistrict postcodeDistrict) {
-        return null;
+    public PostcodeDistrict savePostcodeDistrict(PostcodeDistrict postcodeDistrict) {
+        return this.postcodeDistrictRepository.save(postcodeDistrict);
     }
 }
