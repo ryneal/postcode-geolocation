@@ -26,13 +26,13 @@ public class PostcodeDistrictController {
         this.postcodeDistrictService = postcodeDistrictService;
     }
 
-    @GetMapping("/v1/postcodes/{postcode}")
+    @GetMapping("/v1/postcode_districts/{postcode}")
     public ResponseEntity<PostcodeDistrict> getPostcode(@PathVariable @Pattern(regexp = POSTCODE_DISTRICT_REGEX,
             message = "Invalid Postcode District") String postcode) {
         return ResponseEntity.of(this.postcodeDistrictService.readPostcodeDistrict(postcode));
     }
 
-    @GetMapping("/v1/postcodes")
+    @GetMapping("/v1/postcode_districts")
     public ResponseEntity<List<PostcodeDistrict>> getPostcodesWithQuery(@RequestParam("lat")
                                                                         @DecimalMax(value = "90.0", message = "Latitude maximum is 90")
                                                                         @DecimalMin(value = "-90.0", message = "Latitude minimum is -90")
