@@ -41,7 +41,7 @@ public class Postcode extends Auditable implements GeoSpatial {
     private Long population;
     private Long households;
     private String builtUpArea;
-    private String buildUpSubDivision;
+    private String builtUpSubDivision;
     private String lowerLayerOutputArea;
     private String ruralUrban;
     private String region;

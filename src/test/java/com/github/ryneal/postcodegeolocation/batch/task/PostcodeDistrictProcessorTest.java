@@ -8,18 +8,19 @@ import java.util.Map;
 
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertThat;
 
 public class PostcodeDistrictProcessorTest {
 
     @Test
-    public void shouldProcessAllValuesIntoPostcodeDistrict() throws Exception {
+    public void shouldProcessAllValuesIntoPostcodeDistrict() {
         PostcodeDistrictProcessor processor = new PostcodeDistrictProcessor();
         Map<String, String> districtMap = generatePostcodeDistrictMap();
 
         PostcodeDistrict district = processor.process(districtMap);
 
-        assert district != null;
+        assertNotNull(district);
         assertThat(district.getPostcode(), is("S70"));
         assertThat(district.getLatitude(), is(0.0));
         assertThat(district.getLongitude(), is(1.0));
@@ -39,55 +40,37 @@ public class PostcodeDistrictProcessorTest {
     }
 
     @Test
-    public void shouldProcessProduceEmptyListWithNullValueOfNearestDistricts() throws Exception {
+    public void shouldProcessProduceEmptyListWithNullValueOfNearestDistricts() {
         PostcodeDistrictProcessor processor = new PostcodeDistrictProcessor();
         Map<String, String> districtMap = generatePostcodeDistrictMap();
         districtMap.remove(PostcodeDistrictProcessor.NEARBY_DISTRICTS);
 
         PostcodeDistrict district = processor.process(districtMap);
 
-        assert district != null;
+        assertNotNull(district);
         assertThat(district.getNearbyDistricts().size(), is(0));
     }
 
     @Test
-    public void shouldProcessProduceEmptyListWithEmptyStringValueOfNearestDistricts() throws Exception {
+    public void shouldProcessProduceEmptyListWithEmptyStringValueOfNearestDistricts() {
         PostcodeDistrictProcessor processor = new PostcodeDistrictProcessor();
         Map<String, String> districtMap = generatePostcodeDistrictMap();
         districtMap.put(PostcodeDistrictProcessor.NEARBY_DISTRICTS, "");
 
         PostcodeDistrict district = processor.process(districtMap);
 
-        assert district != null;
+        assertNotNull(district);
         assertThat(district.getNearbyDistricts().size(), is(0));
     }
 
-    @Test
-    public void shouldProcessAllNullDoublesIntoPostcodeDistrict() throws Exception {
+    @Test(expected = NumberFormatException.class)
+    public void shouldHandleNullLatLonAsNumberErrorInPostcodeDistrict() {
         PostcodeDistrictProcessor processor = new PostcodeDistrictProcessor();
         Map<String, String> districtMap = generatePostcodeDistrictMap();
         districtMap.remove(PostcodeDistrictProcessor.LATITUDE);
         districtMap.remove(PostcodeDistrictProcessor.LONGITUDE);
 
-        PostcodeDistrict district = processor.process(districtMap);
-
-        assert district != null;
-        assertThat(district.getPostcode(), is("S70"));
-        assertThat(district.getLatitude(), is(nullValue()));
-        assertThat(district.getLongitude(), is(nullValue()));
-        assertThat(district.getEasting(), is(123L));
-        assertThat(district.getNorthing(), is(321L));
-        assertThat(district.getGridReference(), is("GRID"));
-        assertThat(district.getTownArea(), is("Happyville"));
-        assertThat(district.getRegion(), is("Supershire"));
-        assertThat(district.getPostcodes(), is(234L));
-        assertThat(district.getActivePostcodes(), is(345L));
-        assertThat(district.getPopulation(), is(342L));
-        assertThat(district.getHouseholds(), is(888L));
-        assertThat(district.getNearbyDistricts().size(), is(3));
-        assertThat(district.getNearbyDistricts().get(0), is("a"));
-        assertThat(district.getNearbyDistricts().get(1), is("b"));
-        assertThat(district.getNearbyDistricts().get(2), is("c"));
+        processor.process(districtMap);
     }
 
     @Test(expected = NumberFormatException.class)
@@ -113,7 +96,7 @@ public class PostcodeDistrictProcessorTest {
 
         PostcodeDistrict district = processor.process(districtMap);
 
-        assert district != null;
+        assertNotNull(district);
         assertThat(district.getPostcode(), is("S70"));
         assertThat(district.getLatitude(), is(0.0));
         assertThat(district.getLongitude(), is(1.0));

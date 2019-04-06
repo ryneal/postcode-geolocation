@@ -16,6 +16,8 @@ import java.util.Optional;
 @Component
 public class PostcodeDistrictProcessor implements ItemProcessor<Map<String, String>, PostcodeDistrict> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PostcodeDistrictProcessor.class);
+
     static final String POSTCODE = "Postcode";
     static final String LATITUDE = "Latitude";
     static final String LONGITUDE = "Longitude";
@@ -29,22 +31,16 @@ public class PostcodeDistrictProcessor implements ItemProcessor<Map<String, Stri
     static final String POPULATION = "Population";
     static final String HOUSEHOLDS = "Households";
     static final String NEARBY_DISTRICTS = "Nearby districts";
-    private static final Logger LOGGER = LoggerFactory.getLogger(PostcodeDistrictProcessor.class);
 
     @Override
     public PostcodeDistrict process(Map<String, String> map) throws NumberFormatException {
         try {
             Double longitude = NumberUtil.parseDouble(map.get(LONGITUDE));
             Double latitude = NumberUtil.parseDouble(map.get(LATITUDE));
-            PostcodeDistrict.PostcodeDistrictBuilder builder = PostcodeDistrict
+            return PostcodeDistrict
                     .builder()
-                    .postcode(map.get(POSTCODE));
-
-            if (latitude != null && longitude != null) {
-                builder = builder.location(new GeoJsonPoint(longitude, latitude));
-            }
-
-            return builder
+                    .postcode(map.get(POSTCODE))
+                    .location(new GeoJsonPoint(longitude, latitude))
                     .easting(NumberUtil.parseLong(map.get(EASTING)))
                     .northing(NumberUtil.parseLong(map.get(NORTHING)))
                     .gridReference(map.get(GRID_REFERENCE))
@@ -63,6 +59,9 @@ public class PostcodeDistrictProcessor implements ItemProcessor<Map<String, Stri
         } catch (NumberFormatException e) {
             LOGGER.error("Invalid numeric entry provided", e);
             throw e;
+        } catch (NullPointerException e) {
+            LOGGER.error("Null lat/lon value provided", e);
+            throw new NumberFormatException("Invalid lat/lon provided");
         }
     }
 }
