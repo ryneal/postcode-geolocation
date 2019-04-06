@@ -4,12 +4,12 @@ import com.github.ryneal.postcodegeolocation.model.GeoSpatial;
 
 import java.util.Comparator;
 
-public class DistanceComparator implements Comparator<GeoSpatial> {
+public class HaversineComparator implements Comparator<GeoSpatial> {
 
     private Double lat;
     private Double lon;
 
-    public DistanceComparator(Double lat, Double lon) {
+    public HaversineComparator(Double lat, Double lon) {
         this.lat = lat;
         this.lon = lon;
     }
@@ -22,7 +22,11 @@ public class DistanceComparator implements Comparator<GeoSpatial> {
     }
 
     private double calculateDistance(GeoSpatial postcode) {
-        return Math.sqrt((lon - postcode.getLongitude()) * (lon - postcode.getLongitude()) +
-                (lat - postcode.getLatitude()) * (lat - postcode.getLatitude()));
+        double dLat = Math.toRadians(postcode.getLatitude() - lat);
+        double dLon = Math.toRadians(postcode.getLongitude() - lon);
+        double lat1 = Math.toRadians(lat);
+        double lat2 = Math.toRadians(postcode.getLatitude());
+        double a = Math.pow(Math.sin(dLat / 2),2) + Math.pow(Math.sin(dLon / 2),2) * Math.cos(lat1) * Math.cos(lat2);
+        return  2 * Math.asin(Math.sqrt(a));
     }
 }

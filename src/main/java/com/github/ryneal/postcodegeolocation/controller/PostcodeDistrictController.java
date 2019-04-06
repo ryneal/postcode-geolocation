@@ -2,7 +2,7 @@ package com.github.ryneal.postcodegeolocation.controller;
 
 import com.github.ryneal.postcodegeolocation.model.PostcodeDistrict;
 import com.github.ryneal.postcodegeolocation.service.PostcodeDistrictService;
-import com.github.ryneal.postcodegeolocation.util.comparator.DistanceComparator;
+import com.github.ryneal.postcodegeolocation.util.comparator.HaversineComparator;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -46,7 +46,7 @@ public class PostcodeDistrictController {
                                                                         @DecimalMin(value = "0.0", message = "Distance minimum is 0")
                                                                                 Double distance) {
         return ResponseEntity.ok(this.postcodeDistrictService.readPostcodeDistrictsInArea(lat, lon, distance).stream()
-                .sorted(new DistanceComparator(lat, lon))
+                .sorted(new HaversineComparator(lat, lon))
                 .collect(Collectors.toList()));
     }
 }
