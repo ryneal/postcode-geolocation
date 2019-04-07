@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 import static com.github.ryneal.postcodegeolocation.util.PostcodeConstants.POSTCODE_DISTRICT_REGEX;
 
 @RestController
-public class PostcodeDistrictController {
+public class PostcodeDistrictController extends BaseController {
 
     private PostcodeDistrictService postcodeDistrictService;
 

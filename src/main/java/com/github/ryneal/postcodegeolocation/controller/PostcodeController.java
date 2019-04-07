@@ -20,7 +20,7 @@ import static com.github.ryneal.postcodegeolocation.util.PostcodeConstants.POSTC
 
 @RestController
 @Validated
-public class PostcodeController {
+public class PostcodeController extends BaseController {
 
     private PostcodeService postcodeService;
 
@@ -44,7 +44,7 @@ public class PostcodeController {
                                                                 @DecimalMin(value = "-180.0", message = "Longitude minimum is -180")
                                                                         Double lon,
                                                                 @RequestParam(required = false, defaultValue = "0.01")
-                                                                @DecimalMax(value = "0.5", message = "Distance maximum is 1")
+                                                                @DecimalMax(value = "0.5", message = "Distance maximum is 0.5")
                                                                 @DecimalMin(value = "0.0", message = "Distance minimum is 0")
                                                                         Double distance) {
         return ResponseEntity.ok(this.postcodeService.readPostcodesInArea(lat, lon, distance).stream()
