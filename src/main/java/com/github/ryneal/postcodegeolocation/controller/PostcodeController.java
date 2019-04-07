@@ -4,6 +4,7 @@ import com.github.ryneal.postcodegeolocation.model.Postcode;
 import com.github.ryneal.postcodegeolocation.service.PostcodeService;
 import com.github.ryneal.postcodegeolocation.util.comparator.HaversineComparator;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +19,7 @@ import java.util.stream.Collectors;
 import static com.github.ryneal.postcodegeolocation.util.PostcodeConstants.POSTCODE_REGEX;
 
 @RestController
+@Validated
 public class PostcodeController {
 
     private PostcodeService postcodeService;
