@@ -42,7 +42,7 @@ public class PostcodeDistrictController extends BaseController {
                                                                         @DecimalMin(value = "-180.0", message = "Longitude minimum is -180")
                                                                                 Double lon,
                                                                         @RequestParam(required = false, defaultValue = "0.01")
-                                                                        @DecimalMax(value = "0.5", message = "Distance maximum is 1")
+                                                                        @DecimalMax(value = "0.5", message = "Distance maximum is 0.5")
                                                                         @DecimalMin(value = "0.0", message = "Distance minimum is 0")
                                                                                 Double distance) {
         return ResponseEntity.ok(this.postcodeDistrictService.readPostcodeDistrictsInArea(lat, lon, distance).stream()
