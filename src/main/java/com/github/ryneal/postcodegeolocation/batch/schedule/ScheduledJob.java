@@ -38,9 +38,11 @@ public class ScheduledJob {
             lockAtMostForString = "${task.postcode.lock.at-most:PT4H}")
     public void runPostcodeBatchJob() {
         try {
+            LOGGER.info("Started Postcode Batch Job");
             this.jobLauncher.run(postcodeJob, new JobParametersBuilder()
                     .addString("JobId", "P" + System.currentTimeMillis())
                     .toJobParameters());
+            LOGGER.info("Finished Postcode Batch Job");
         } catch (JobExecutionAlreadyRunningException | JobRestartException |
                 JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
             LOGGER.error("Postcode Job Failed: " + e.getMessage());
@@ -53,9 +55,11 @@ public class ScheduledJob {
             lockAtMostForString = "${task.postcode-district.lock.at-most:PT4H}")
     public void runPostcodeDistrictBatchJob() {
         try {
+            LOGGER.info("Started Postcode District Batch Job");
             this.jobLauncher.run(postcodeDistrictJob, new JobParametersBuilder()
                     .addString("JobId", "PD" + System.currentTimeMillis())
                     .toJobParameters());
+            LOGGER.info("Finished Postcode District Batch Job");
         } catch (JobExecutionAlreadyRunningException | JobRestartException |
                 JobInstanceAlreadyCompleteException | JobParametersInvalidException e) {
             LOGGER.error("PostcodeDistrict Job Failed: " + e.getMessage());
