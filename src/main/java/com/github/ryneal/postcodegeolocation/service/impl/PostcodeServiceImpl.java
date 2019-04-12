@@ -4,6 +4,7 @@ import com.github.ryneal.postcodegeolocation.model.Postcode;
 import com.github.ryneal.postcodegeolocation.repository.PostcodeRepository;
 import com.github.ryneal.postcodegeolocation.service.PostcodeService;
 import org.springframework.data.geo.Distance;
+import org.springframework.data.geo.Metrics;
 import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 
@@ -26,7 +27,7 @@ public class PostcodeServiceImpl implements PostcodeService {
 
     @Override
     public List<Postcode> readPostcodesInArea(Double latitude, Double longitude, Double distance) {
-        return this.postcodeRepository.findByLocationNear(new Point(latitude, longitude), new Distance(distance));
+        return this.postcodeRepository.findByLocationNear(new Point(latitude, longitude), new Distance(distance, Metrics.MILES));
     }
 
     @Override

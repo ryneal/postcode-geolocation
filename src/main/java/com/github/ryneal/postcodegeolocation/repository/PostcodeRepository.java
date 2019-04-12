@@ -14,4 +14,6 @@ public interface PostcodeRepository extends MongoRepository<Postcode, String> {
     Optional<Postcode> findFirstByPostcode(String postcode);
 
     List<Postcode> findByLocationNear(Point point, Distance max);
+
+    List<Postcode> findAllByAltitudeGreaterThan(Double altitude);
 }
