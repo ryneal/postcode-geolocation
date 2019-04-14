@@ -7,7 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
+import org.springframework.data.geo.Point;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -173,25 +173,25 @@ public class PostcodeDistrictControllerIntegrationTest {
     private void setupData() {
         PostcodeDistrict postcode1 = PostcodeDistrict.builder()
                 .postcode("S4")
-                .location(new GeoJsonPoint(0.0, 0.0))
+                .location(new Point(0.0, 0.0))
                 .build();
         this.repository.save(postcode1);
 
         PostcodeDistrict postcode2 = PostcodeDistrict.builder()
                 .postcode("LS11")
-                .location(new GeoJsonPoint(5.0, 4.0))
+                .location(new Point(5.0, 4.0))
                 .build();
         this.repository.save(postcode2);
 
         PostcodeDistrict postcode3 = PostcodeDistrict.builder()
                 .postcode("LS12")
-                .location(new GeoJsonPoint(6.0, 4.05))
+                .location(new Point(6.0, 4.05))
                 .build();
         this.repository.save(postcode3);
 
         PostcodeDistrict postcode4 = PostcodeDistrict.builder()
                 .postcode("LS13")
-                .location(new GeoJsonPoint(6.5, 4.05))
+                .location(new Point(6.5, 4.05))
                 .build();
         this.repository.save(postcode4);
     }

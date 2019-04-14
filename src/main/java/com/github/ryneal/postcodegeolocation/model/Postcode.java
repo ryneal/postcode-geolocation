@@ -8,64 +8,27 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
-import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
-import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.geo.Point;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.GeoIndexed;
+import org.springframework.data.redis.core.index.Indexed;
 
 @EqualsAndHashCode(callSuper = true)
-@Document
+@RedisHash("Postcode")
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Postcode extends Auditable implements GeoSpatial {
 
     @Id
+    @Indexed
     private String postcode;
     private Boolean inUse;
-    private Long easting;
-    private Long northing;
-    private String gridRef;
-    private String county;
     private String district;
-    private String ward;
     private String districtCode;
-    private String wardCode;
-    private String country;
-    private String countryCode;
-    private String constituency;
-    private String introduced;
-    private String terminated;
-    private String parish;
-    private String nationalPark;
-    private Long population;
-    private Long households;
-    private String builtUpArea;
-    private String builtUpSubDivision;
-    private String lowerLayerOutputArea;
-    private String ruralUrban;
-    private String region;
-    private Double altitude;
-    private String londonZone;
-    private String lsoaCode;
-    private String localAuthority;
-    private String msoaCode;
-    private String middleLayerOutputArea;
-    private String parishCode;
-    private String censusOutputArea;
-    private String constituencyCode;
-    private Long multipleDeprivationIndex;
-    private Long quality;
-    private Long userType;
-    private String lastUpdated;
-    private String nearestStation;
-    private Double distanceToStation;
-    private String postcodeArea;
-    private String postcodeDistrict;
-    private String policeForce;
     @JsonIgnore
-    @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
-    private GeoJsonPoint location;
+    @GeoIndexed
+    private Point location;
 
     @JsonProperty("latitude")
     @JsonInclude(JsonInclude.Include.NON_NULL)
