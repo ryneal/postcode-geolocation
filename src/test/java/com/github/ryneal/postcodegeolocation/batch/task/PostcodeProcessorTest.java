@@ -24,8 +24,6 @@ public class PostcodeProcessorTest {
         assertThat(postcode.getInUse(), is(true));
         assertThat(postcode.getLatitude(), is(0.0));
         assertThat(postcode.getLongitude(), is(1.0));
-        assertThat(postcode.getDistrict(), is("LS6"));
-        assertThat(postcode.getDistrictCode(), is("LS6T"));
     }
 
     @Test(expected = NumberFormatException.class)
@@ -54,8 +52,6 @@ public class PostcodeProcessorTest {
         map.put(PostcodeProcessor.IN_USE, "YES");
         map.put(PostcodeProcessor.LATITUDE, "0.0");
         map.put(PostcodeProcessor.LONGITUDE, "1.0");
-        map.put(PostcodeProcessor.DISTRICT, "LS6");
-        map.put(PostcodeProcessor.DISTRICT_CODE, "LS6T");
 
         return map;
     }

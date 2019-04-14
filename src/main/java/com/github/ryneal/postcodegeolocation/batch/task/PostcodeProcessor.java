@@ -20,8 +20,6 @@ public class PostcodeProcessor implements ItemProcessor<Map<String, String>, Pos
     static final String IN_USE = "In Use?";
     static final String LATITUDE = "Latitude";
     static final String LONGITUDE = "Longitude";
-    static final String DISTRICT = "District";
-    static final String DISTRICT_CODE = "District Code";
 
     @Override
     public Postcode process(Map<String, String> map) throws NumberFormatException {
@@ -32,8 +30,6 @@ public class PostcodeProcessor implements ItemProcessor<Map<String, String>, Pos
                     .location(new Point(
                             NumberUtil.parseDouble(map.get(LONGITUDE)),
                             NumberUtil.parseDouble(map.get(LATITUDE))))
-                    .district(map.get(DISTRICT))
-                    .districtCode(map.get(DISTRICT_CODE))
                     .build();
         } catch (NumberFormatException e) {
             LOGGER.error("Invalid numeric entry provided", e);

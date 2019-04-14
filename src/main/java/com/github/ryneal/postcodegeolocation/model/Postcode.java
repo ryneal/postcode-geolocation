@@ -24,8 +24,6 @@ public class Postcode extends Auditable implements GeoSpatial {
     @Indexed
     private String postcode;
     private Boolean inUse;
-    private String district;
-    private String districtCode;
     @JsonIgnore
     @GeoIndexed
     private Point location;
