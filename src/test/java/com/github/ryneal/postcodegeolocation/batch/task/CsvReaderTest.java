@@ -2,7 +2,6 @@ package com.github.ryneal.postcodegeolocation.batch.task;
 
 import org.junit.Test;
 
-import java.io.File;
 import java.net.URL;
 import java.util.Map;
 
@@ -19,7 +18,7 @@ public class CsvReaderTest {
 
     @Test
     public void shouldReadCsvSampleWithHeader() throws Exception {
-        CsvReader csvReader = new CsvReader(new File(this.testOneResource.getPath()), true);
+        CsvReader csvReader = new CsvReader(this.testOneResource.getPath(), true);
         csvReader.beforeStep();
 
         Map<String, String> firstLine = csvReader.read();
@@ -34,7 +33,7 @@ public class CsvReaderTest {
 
     @Test
     public void shouldReadCsvSampleWithoutHeader() throws Exception {
-        CsvReader csvReader = new CsvReader(new File(this.testOneResource.getPath()), false);
+        CsvReader csvReader = new CsvReader(this.testOneResource.getPath(), false);
         csvReader.beforeStep();
 
         Map<String, String> firstLine = csvReader.read();
@@ -52,7 +51,7 @@ public class CsvReaderTest {
 
     @Test
     public void shouldReturnEmptyMapIfCsvIsFormattedWithTooFewRowEntries() throws Exception {
-        CsvReader csvReader = new CsvReader(new File(this.testTwoResource.getPath()), true);
+        CsvReader csvReader = new CsvReader(this.testTwoResource.getPath(), true);
         csvReader.beforeStep();
 
         Map<String, String> firstLine = csvReader.read();
@@ -63,7 +62,7 @@ public class CsvReaderTest {
 
     @Test
     public void shouldReturnEmptyMapIfCsvIsFormattedWithTooManyRowEntries() throws Exception {
-        CsvReader csvReader = new CsvReader(new File(this.testThreeResource.getPath()), true);
+        CsvReader csvReader = new CsvReader(this.testThreeResource.getPath(), true);
         csvReader.beforeStep();
 
         Map<String, String> firstLine = csvReader.read();

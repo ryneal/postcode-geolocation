@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.File;
 import java.util.Map;
 
 @Configuration
@@ -44,7 +43,7 @@ public class BatchConfig {
     @Bean
     @StepScope
     public CsvReader postcodeCsvReader() {
-        return new CsvReader(new File(this.postcodeFile), true);
+        return new CsvReader(this.postcodeFile, true);
     }
 
     @Bean
@@ -72,7 +71,7 @@ public class BatchConfig {
     @Bean
     @StepScope
     public CsvReader postcodeDistrictCsvReader() {
-        return new CsvReader(new File(this.postcodeDistrictFile), true);
+        return new CsvReader(this.postcodeDistrictFile, true);
     }
 
     @Bean

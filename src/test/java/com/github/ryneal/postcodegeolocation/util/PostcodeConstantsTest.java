@@ -5,7 +5,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.io.File;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -30,8 +29,8 @@ public class PostcodeConstantsTest {
     public void setUp() throws Exception {
         assertNotNull(this.postcodeResource);
         assertNotNull(this.postcodeDistrictResource);
-        this.postcodeCsvReader = new CsvReader(new File(this.postcodeResource.getPath()), true);
-        this.postcodeDistrictReader = new CsvReader(new File(this.postcodeDistrictResource.getPath()), true);
+        this.postcodeCsvReader = new CsvReader(this.postcodeResource.getPath(), true);
+        this.postcodeDistrictReader = new CsvReader(this.postcodeDistrictResource.getPath(), true);
         this.postcodeCsvReader.beforeStep();
         this.postcodeDistrictReader.beforeStep();
     }

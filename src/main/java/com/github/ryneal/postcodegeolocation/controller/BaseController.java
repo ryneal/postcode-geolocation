@@ -25,8 +25,8 @@ public abstract class BaseController {
         return new ErrorEntity(exception.getBindingResult()
                 .getFieldErrors()
                 .stream()
-                .map(FieldError::getDefaultMessage)
                 .findFirst()
+                .map(FieldError::getDefaultMessage)
                 .orElse("A value provided was not valid"));
     }
 
@@ -38,8 +38,8 @@ public abstract class BaseController {
         LOGGER.info(exception.getMessage());
         return new ErrorEntity(exception.getConstraintViolations()
                 .stream()
-                .map(ConstraintViolation::getMessage)
                 .findFirst()
+                .map(ConstraintViolation::getMessage)
                 .orElse("A value provided was not valid"));
     }
 

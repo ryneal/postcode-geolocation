@@ -8,36 +8,25 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.geo.GeoJsonPoint;
-import org.springframework.data.mongodb.core.index.GeoSpatialIndexType;
-import org.springframework.data.mongodb.core.index.GeoSpatialIndexed;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-import java.util.List;
+import org.springframework.data.geo.Point;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.index.GeoIndexed;
+import org.springframework.data.redis.core.index.Indexed;
 
 @EqualsAndHashCode(callSuper = true)
-@Document
+@RedisHash("PostcodeDistrict")
 @Data
 @Builder
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PostcodeDistrict extends Auditable implements GeoSpatial {
 
     @Id
+    @Indexed
     private String postcode;
-    private Long easting;
-    private Long northing;
-    private String gridReference;
-    private String townArea;
-    private String region;
-    private Long postcodes;
-    private Long activePostcodes;
-    private Long population;
-    private Long households;
-    private List<String> nearbyDistricts;
 
     @JsonIgnore
-    @GeoSpatialIndexed(type = GeoSpatialIndexType.GEO_2DSPHERE)
-    private GeoJsonPoint location;
+    @GeoIndexed
+    private Point location;
 
     @JsonProperty("latitude")
     @JsonInclude(JsonInclude.Include.NON_NULL)
