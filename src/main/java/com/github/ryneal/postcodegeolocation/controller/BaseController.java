@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.validation.ConstraintViolation;
 import javax.validation.ConstraintViolationException;
 
 public abstract class BaseController {
@@ -38,7 +39,7 @@ public abstract class BaseController {
         return new ErrorEntity(exception.getConstraintViolations()
                 .stream()
                 .findFirst()
-                .map(violation -> violation.getMessage() + " " + violation.getInvalidValue())
+                .map(ConstraintViolation::getMessage)
                 .orElse("A value provided was not valid"));
     }
 

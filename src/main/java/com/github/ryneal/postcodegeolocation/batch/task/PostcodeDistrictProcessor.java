@@ -22,19 +22,18 @@ public class PostcodeDistrictProcessor implements ItemProcessor<Map<String, Stri
     @Override
     public PostcodeDistrict process(Map<String, String> map) throws NumberFormatException {
         try {
-            Double longitude = NumberUtil.parseDouble(map.get(LONGITUDE));
-            Double latitude = NumberUtil.parseDouble(map.get(LATITUDE));
-            return PostcodeDistrict
-                    .builder()
+            return PostcodeDistrict.builder()
                     .postcode(map.get(POSTCODE).replaceAll(" ", ""))
-                    .location(new Point(longitude, latitude))
+                    .location(new Point(
+                            NumberUtil.parseDouble(map.get(LONGITUDE)),
+                            NumberUtil.parseDouble(map.get(LATITUDE))))
                     .build();
         } catch (NumberFormatException e) {
-            LOGGER.error("Postcode District: " + map.get(POSTCODE) + " Invalid numeric entry provided: " + e.getMessage());
-            return null;
+            LOGGER.error("Invalid numeric entry provided", e);
+            throw e;
         } catch (NullPointerException e) {
-            LOGGER.error("Postcode District: " + map.get(POSTCODE) + " Null lat/lon value provided");
-            return null;
+            LOGGER.error("Null lat/lon value provided", e);
+            throw new NumberFormatException("Invalid lat/lon provided");
         }
     }
 }

@@ -3,6 +3,7 @@ package com.github.ryneal.postcodegeolocation.controller;
 import com.github.ryneal.postcodegeolocation.model.PostcodeDistrict;
 import com.github.ryneal.postcodegeolocation.service.PostcodeDistrictService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,6 +17,7 @@ import java.util.List;
 import static com.github.ryneal.postcodegeolocation.util.PostcodeConstants.POSTCODE_DISTRICT_REGEX;
 
 @RestController
+@Validated
 public class PostcodeDistrictController extends BaseController {
 
     private PostcodeDistrictService postcodeDistrictService;

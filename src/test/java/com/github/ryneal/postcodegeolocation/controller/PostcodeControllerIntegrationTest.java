@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.geo.Point;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -16,10 +17,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.ServletContext;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,15 +38,34 @@ public class PostcodeControllerIntegrationTest {
     @Autowired
     private WebApplicationContext wac;
 
-    @Autowired
-    private PostcodeRepository repository;
-
     private MockMvc mockMvc;
 
+    @MockBean
+    private PostcodeRepository postcodeRepository;
+
+    private Postcode postcode1 = Postcode.builder()
+            .postcode("S48AA")
+            .location(new Point(0.0, 0.0))
+            .build();
+
+    private Postcode postcode2 = Postcode.builder()
+            .postcode("LS119BH")
+            .location(new Point(5.0, 4.0))
+            .build();
+
+    private Postcode postcode3 = Postcode.builder()
+            .postcode("LS119BT")
+            .location(new Point(6.0, 4.05))
+            .build();
+
+    private Postcode postcode4 = Postcode.builder()
+            .postcode("LS119BJ")
+            .location(new Point(6.5, 4.05))
+            .build();
+
     @Before
-    public void setup() {
+    public void setup() throws Exception {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-        setupData();
     }
 
     @Test
@@ -54,6 +79,8 @@ public class PostcodeControllerIntegrationTest {
 
     @Test
     public void givenPostcode_whenSearched_thenResultProvided() throws Exception {
+        when(this.postcodeRepository.findFirstByPostcode("S48AA")).thenReturn(Optional.of(postcode1));
+
         this.mockMvc.perform(get("/v1/postcodes/S48AA"))
                 .andExpect(jsonPath("$.postcode").value("S48AA"))
                 .andExpect(jsonPath("$.latitude").value("0.0"))
@@ -70,6 +97,7 @@ public class PostcodeControllerIntegrationTest {
 
     @Test
     public void givenValidCoordsWithoutDistance_whenSearched_thenResultProvided() throws Exception {
+        when(this.postcodeRepository.findByLocationNear(any(), any())).thenReturn(Collections.singletonList(postcode2));
         this.mockMvc.perform(get("/v1/postcodes?lat=5.0&lon=4.0"))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -81,6 +109,7 @@ public class PostcodeControllerIntegrationTest {
 
     @Test
     public void givenValidCoordsWithDefaultDistance_whenSearched_thenResultProvided() throws Exception {
+        when(this.postcodeRepository.findByLocationNear(any(), any())).thenReturn(Collections.singletonList(postcode2));
         this.mockMvc.perform(get("/v1/postcodes?lat=5.0&lon=4.0&distance=0.01"))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -92,6 +121,7 @@ public class PostcodeControllerIntegrationTest {
 
     @Test
     public void givenValidCoordsWithLargerDistance_whenSearched_thenResultsProvidedInOrderOfDistance() throws Exception {
+        when(this.postcodeRepository.findByLocationNear(any(), any())).thenReturn(Arrays.asList(postcode2, postcode3, postcode4));
         this.mockMvc.perform(get("/v1/postcodes?lat=5.0&lon=4.0&distance=0.1"))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", hasSize(3)))
@@ -168,32 +198,6 @@ public class PostcodeControllerIntegrationTest {
         this.mockMvc.perform(get("/v1/postcodes?lat=0.0&lon=0.0&distance=-0.01"))
                 .andExpect(jsonPath("$.message").value("Distance minimum is 0"))
                 .andExpect(status().isBadRequest());
-    }
-
-    private void setupData() {
-        Postcode postcode1 = Postcode.builder()
-                .postcode("S48AA")
-                .location(new Point(0.0, 0.0))
-                .build();
-        this.repository.save(postcode1);
-
-        Postcode postcode2 = Postcode.builder()
-                .postcode("LS119BH")
-                .location(new Point(5.0, 4.0))
-                .build();
-        this.repository.save(postcode2);
-
-        Postcode postcode3 = Postcode.builder()
-                .postcode("LS119BT")
-                .location(new Point(6.0, 4.05))
-                .build();
-        this.repository.save(postcode3);
-
-        Postcode postcode4 = Postcode.builder()
-                .postcode("LS119BJ")
-                .location(new Point(6.5, 4.05))
-                .build();
-        this.repository.save(postcode4);
     }
 
 }

@@ -7,6 +7,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.geo.Point;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -16,10 +17,15 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import javax.servlet.ServletContext;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -32,15 +38,34 @@ public class PostcodeDistrictControllerIntegrationTest {
     @Autowired
     private WebApplicationContext wac;
 
-    @Autowired
-    private PostcodeDistrictRepository repository;
+    @MockBean
+    private PostcodeDistrictRepository postcodeDistrictRepository;
 
     private MockMvc mockMvc;
+
+    private PostcodeDistrict postcode1 = PostcodeDistrict.builder()
+            .postcode("S4")
+            .location(new Point(0.0, 0.0))
+            .build();
+
+    private PostcodeDistrict postcode2 = PostcodeDistrict.builder()
+            .postcode("LS11")
+            .location(new Point(5.0, 4.0))
+            .build();
+
+    private PostcodeDistrict postcode3 = PostcodeDistrict.builder()
+            .postcode("LS12")
+            .location(new Point(6.0, 4.05))
+            .build();
+
+    private PostcodeDistrict postcode4 = PostcodeDistrict.builder()
+            .postcode("LS13")
+            .location(new Point(6.5, 4.05))
+            .build();
 
     @Before
     public void setup() {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(this.wac).build();
-        setupData();
     }
 
     @Test
@@ -54,8 +79,9 @@ public class PostcodeDistrictControllerIntegrationTest {
 
     @Test
     public void givenPostcode_whenSearched_thenResultProvided() throws Exception {
+        when(this.postcodeDistrictRepository.findFirstByPostcode("S4")).thenReturn(Optional.of(postcode1));
         this.mockMvc.perform(get("/v1/postcode_districts/S4"))
-                .andExpect(jsonPath("$.postcode").value("S48AA"))
+                .andExpect(jsonPath("$.postcode").value("S4"))
                 .andExpect(jsonPath("$.latitude").value("0.0"))
                 .andExpect(jsonPath("$.longitude").value("0.0"))
                 .andExpect(status().isOk());
@@ -63,13 +89,15 @@ public class PostcodeDistrictControllerIntegrationTest {
 
     @Test
     public void givenInvalidPostcode_whenSearched_thenResultStatusIsBadRequest() throws Exception {
-        this.mockMvc.perform(get("/v1/postcode_districts/s6f"))
-                .andExpect(jsonPath("$.message").value("Invalid Postcode"))
+        this.mockMvc.perform(get("/v1/postcode_districts/gary"))
+                .andExpect(jsonPath("$.message").value("Invalid Postcode District"))
                 .andExpect(status().isBadRequest());
     }
 
     @Test
     public void givenValidCoordsWithoutDistance_whenSearched_thenResultProvided() throws Exception {
+        when(this.postcodeDistrictRepository.findByLocationNear(any(), any())).thenReturn(Collections.singletonList(postcode2));
+
         this.mockMvc.perform(get("/v1/postcode_districts?lat=5.0&lon=4.0"))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -81,17 +109,21 @@ public class PostcodeDistrictControllerIntegrationTest {
 
     @Test
     public void givenValidCoordsWithDefaultDistance_whenSearched_thenResultProvided() throws Exception {
+        when(this.postcodeDistrictRepository.findByLocationNear(any(), any())).thenReturn(Collections.singletonList(postcode3));
+
         this.mockMvc.perform(get("/v1/postcode_districts?lat=5.0&lon=4.0&distance=0.01"))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$.[0].postcode").value("LS12"))
-                .andExpect(jsonPath("$.[0].latitude").value("4.0"))
-                .andExpect(jsonPath("$.[0].longitude").value("5.0"))
+                .andExpect(jsonPath("$.[0].latitude").value("4.05"))
+                .andExpect(jsonPath("$.[0].longitude").value("6.0"))
                 .andExpect(status().isOk());
     }
 
     @Test
     public void givenValidCoordsWithLargerDistance_whenSearched_thenResultsProvidedInOrderOfDistance() throws Exception {
+        when(this.postcodeDistrictRepository.findByLocationNear(any(), any())).thenReturn(Arrays.asList(postcode2, postcode3, postcode4));
+
         this.mockMvc.perform(get("/v1/postcode_districts?lat=5.0&lon=4.0&distance=0.1"))
                 .andExpect(jsonPath("$").isArray())
                 .andExpect(jsonPath("$", hasSize(3)))
@@ -170,29 +202,4 @@ public class PostcodeDistrictControllerIntegrationTest {
                 .andExpect(status().isBadRequest());
     }
 
-    private void setupData() {
-        PostcodeDistrict postcode1 = PostcodeDistrict.builder()
-                .postcode("S4")
-                .location(new Point(0.0, 0.0))
-                .build();
-        this.repository.save(postcode1);
-
-        PostcodeDistrict postcode2 = PostcodeDistrict.builder()
-                .postcode("LS11")
-                .location(new Point(5.0, 4.0))
-                .build();
-        this.repository.save(postcode2);
-
-        PostcodeDistrict postcode3 = PostcodeDistrict.builder()
-                .postcode("LS12")
-                .location(new Point(6.0, 4.05))
-                .build();
-        this.repository.save(postcode3);
-
-        PostcodeDistrict postcode4 = PostcodeDistrict.builder()
-                .postcode("LS13")
-                .location(new Point(6.5, 4.05))
-                .build();
-        this.repository.save(postcode4);
-    }
 }
